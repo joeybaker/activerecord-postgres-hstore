@@ -25,9 +25,9 @@ class String
         case t
         when nil
           t
-        when /^"{(.*)"$/ # A quoted hash
+        when /^"\{(.*?)\}"$/ # A quoted hash
           $1.gsub(/\\(.)/, '\1').from_hstore
-        when /^"(.*)"$/ # A quoted value
+        when /^"(.*?)"$/ # A quoted value
           $1.gsub(/\\(.)/, '\1')
         else
           t.gsub(/\\(.)/, '\1')
