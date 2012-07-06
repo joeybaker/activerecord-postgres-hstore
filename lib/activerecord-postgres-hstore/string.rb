@@ -30,7 +30,13 @@ class String
     return true if self =~ /^true$/i
     return false if self =~ /^false$/i
     return nil if self =~ /^NULL$/i
-    return self.to_f if self.is_numeric?
+    if self.is_numeric?
+      if self =~ /^{0,9}\.{0,9}$/
+        return self.to_f
+      else
+        return self.to_i
+      end
+    end
     unquoted = self[1..-2]
     return $1.gsub(/\\(.)/, '\1').from_hstore if can_be_obj && unquoted =~ /^\{\\(.*?)\}/
     unquoted
