@@ -26,26 +26,20 @@ class String
       false
   end
 
+  def to_implicit_type(can_be_obj=true)
+    return true if self =~ /^true$/i
+    return false if self =~ /^false$/i
+    return nil if self =~ /^NULL$/i
+    return self.to_f if self.is_numeric?
+    unquoted = self[1..-2]
+    return $1.gsub(/\\(.)/, '\1').from_hstore if can_be_obj && unquoted =~ /^\{\\(.*?)\}/
+    unquoted
+  end
+
   # Creates a hash from a valid double quoted hstore format, 'cause this is the format
   # that postgresql spits out.
   def from_hstore
-    token_pairs = (scan(hstore_pair)).map { |k,v| [k,v =~ /^NULL$/i ? nil : v] }
-    token_pairs = token_pairs.map { |k,v|
-      [k,v].map { |t| 
-        case t
-        when nil
-          t
-        when t.is_numeric? || "true" || "false" # values that should not be quoted
-          t.gsub(/"(.*?)"/, '\1')
-        when /^"\{(.*?)\}"$/ # A quoted hash
-          $1.gsub(/\\(.)/, '\1').from_hstore
-        when /^"(.*?)"$/ # A quoted value
-          $1.gsub(/\\(.)/, '\1')
-        else
-          t.gsub(/\\(.)/, '\1')
-        end
-      }
-    }
+    token_pairs = (scan(hstore_pair)).map { |k,v| [k.to_implicit_type(false), v.to_implicit_type] }
     Hash[ token_pairs ]
   end
 
