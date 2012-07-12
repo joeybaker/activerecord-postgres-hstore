@@ -31,7 +31,7 @@ class String
     return false if self =~ /^false$/i
     return nil if self =~ /^NULL$/i
     if self.is_numeric?
-      if self =~ /^{0,9}\.{0,9}$/
+      if self =~ /^[0-9]+\.[0-9]+$/
         return self.to_f
       else
         return self.to_i
