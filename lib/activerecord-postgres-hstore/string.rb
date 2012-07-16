@@ -37,7 +37,7 @@ class String
         return self.to_i
       end
     end
-    unquoted = self[1..-2]
+    unquoted = self[0] == '"' ? self[1..-2] : self
     return $1.gsub(/\\(.)/, '\1').from_hstore if can_be_obj && unquoted =~ /^\{\\(.*?)\}/
     unquoted
   end
