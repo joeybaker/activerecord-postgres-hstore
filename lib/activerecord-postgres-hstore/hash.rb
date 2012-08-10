@@ -13,6 +13,7 @@ class Hash
     str.gsub!(/\\/, '\\\\\\')
     # escape backslashes before injecting more backslashes
     str.gsub!(/"/, '\"')
+    str.gsub!(/\\\\"/, '"')
     
     if str =~ HSTORE_ESCAPED or str.empty?
       str = '"%s"' % str

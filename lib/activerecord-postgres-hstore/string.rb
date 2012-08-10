@@ -37,7 +37,10 @@ class String
         return self.to_i
       end
     end
+    # if the string is wrapped in quotes, unquote it
     unquoted = self[0] == '"' ? self[1..-2] : self
+    # if there's a double quote that got escape so that the hstore would save properly, undo that.
+    unquoted.gsub!(/\\"/, '"')
     return $1.gsub(/\\(.)/, '\1').from_hstore if can_be_obj && unquoted =~ /^\{\\(.*?)\}/
     unquoted
   end
